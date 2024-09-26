@@ -1,13 +1,8 @@
 //: [Previous](@previous)
 
 import Foundation
-
-var greeting = "Hello, playground"
-
 //: [Next](@next)
-//var greeting = "Hello, playground"
 var numbers = [0,0,1,0,0,1,0,0]
-print(greeting)
 print(palindrome("abcdedcba"))
 print(dictionaryGroupBy([1,2,5,6,3,2,1,3,2,6,7,4,8,9,5,7,9]))
 
@@ -616,3 +611,20 @@ func rotate(_ nums: inout [Int], _ k: Int) {
 //rotate(&nums, 1)
 //print(nums)
 
+
+func kadane(_ arr: [Int]) -> Int {
+    guard !arr.isEmpty else { return 0 }
+    var maxSoFar = arr[0]
+    var currentMax = arr[0]
+    for i in 1..<arr.count {
+        currentMax = max(arr[i], currentMax + arr[i])
+//        print("currentMax \(currentMax) index \(i)")
+        maxSoFar = max(maxSoFar, currentMax)
+//        print("maxSoFar \(maxSoFar)  index \(i)")
+    }
+    return maxSoFar
+}
+
+let arr = [-2, 1, -3, 4, -2, 2, 1, -5, 4]
+let result = kadane(arr)
+print("Maximum subarray sum: \(result)")
