@@ -5,6 +5,7 @@ import Network
 import Combine
 var postUrl = "https://jsonplaceholder.typicode.com/posts"
 var usersUrl = "https://jsonplaceholder.typicode.com/users"
+var todoUrl = "https://jsonplaceholder.typicode.com/todos"
 //Model
 //=======
 enum NetworkError: Error {
@@ -25,19 +26,20 @@ struct User: Codable {
     let email: String
 }
 
-struct NewUser: Codable {
-    let name: String
-    let email: String
+struct NewPost: Codable {
+    let body: String
+    let title: String
+    let userId: Int
 }
 
 struct UserAPIServiceManager: UserAPIServiceProviderProtocol {
     func fetchUsers(_ urlString: String?) async throws -> [User] {
-            do {
-                let result:[User] = try await NetworkManager.shared.get(urlString: urlString!)
-                return result
-            } catch {
-                throw error
-            }
+        do {
+            let result:[User] = try await NetworkManager.shared.get(urlString: urlString!)
+            return result
+        } catch {
+            throw error
+        }
     }
 }
 
@@ -59,13 +61,13 @@ class NetworkManager {
             throw NetworkError.requestFailed
         }
         do {
-            let decoder = JSONDecoder()
-            return try decoder.decode(T.self, from: data)
+            return try JSONDecoder().decode(T.self, from: data)
         } catch {
             throw NetworkError.decodingError
         }
     }
 
+    
     // Generic function to perform a POST request
     func post<T: Encodable, R: Decodable>(urlString: String, body: T) async throws -> R {
         guard let url = URL(string: urlString) else {
@@ -81,7 +83,7 @@ class NetworkManager {
         request.httpBody = jsonData
 
         let (data, response) = try await URLSession.shared.data(for: request)
-        
+        print((response as? HTTPURLResponse)?.statusCode)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw NetworkError.requestFailed
         }
@@ -93,20 +95,18 @@ class NetworkManager {
             throw NetworkError.decodingError
         }
     }
+     
 }
 
-
 func createUser() async {
-    let newUser = NewUser(name: "John Doe", email: "john.doe@example.com")
-    
+    let newUser = NewPost(body: "qwerty", title:  "John Doe", userId: 2)
     do {
-        let response: User = try await NetworkManager.shared.post(urlString: usersUrl, body: newUser)
+        let response: PostModel = try await NetworkManager.shared.post(urlString: postUrl, body: newUser)
         print("User created with ID: \(response.id)")
     } catch {
         print("Failed to create user: \(error.localizedDescription)")
     }
 }
-
 
 //Task {
 //    do {
@@ -151,5 +151,32 @@ class UserViewModel: ObservableObject {
     }
 }
 
-var viewModel = UserViewModel()
-viewModel.fetchUsers()
+
+
+
+class HomeVC{
+    var viewModel: UserViewModel = UserViewModel()
+    var cancellable: Set<AnyCancellable> = []
+    
+    init() {
+        bindViewModel()
+    }
+    
+    func bindViewModel(){
+        self.viewModel.$errorMessage.sink { [weak self] errMsg in
+            print(errMsg)
+        }.store(in: &cancellable)
+        
+        self.viewModel.$users.sink {  [weak self] users in
+            print("=-=-=-=")
+            print(users)
+        }.store(in: &cancellable)
+    }
+    
+    func fetchUser(){
+        viewModel.fetchUsers()
+    }
+}
+
+var homeVC = HomeVC()
+homeVC.fetchUser()

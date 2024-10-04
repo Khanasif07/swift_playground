@@ -8,12 +8,12 @@ var greeting = "Hello, playground"
 
 //MARK:- Main Thread
 DispatchQueue.main.async {
-    print ("is main thread on serial queue", Thread.isMainThread)
+//    print ("main thread:", Thread.isMainThread)
 }
 //
 //MARK:- Concurrent Queue
 DispatchQueue.global().async {
-    print ("is main thread on concurrent queue", Thread.isMainThread)
+//    print ("background global thread:", Thread.isMainThread)
 }
 
 //MARK:- Private queue
@@ -200,7 +200,75 @@ func doLongSyncTaskInConcurrentQueue() {
     }
 }
 
-doLongAsyncTaskInSerialQueue()
+//doLongAsyncTaskInSerialQueue()
 //doLongSyncTaskInSerialQueue()
 //doLongASyncTaskInConcurrentQueue()
 //doLongSyncTaskInConcurrentQueue()
+
+//Dispatch Semaphore
+//==================
+//
+let semaphore = DispatchSemaphore(value: 1)
+for i in 1...6 {
+    semaphore.wait()  // semaphore -= 1
+    print("wait enter")
+    DispatchQueue.global().async() {
+        print("Start access to the shared resource: \(i)")
+        sleep(2)
+        semaphore.signal()  // semaphore += 1
+        print("signal enter")
+    }
+}
+    //
+
+//Operation Queue
+//==================
+//
+let operationQueue = OperationQueue()
+operationQueue.maxConcurrentOperationCount = 1
+let blockOperation1 = BlockOperation {
+    print("Operation 1 started")
+    sleep(2)
+    print("Operation 1 finished")
+}
+let blockOperation2 = BlockOperation {
+    print("Operation 2 started")
+    sleep(2)
+    print("Operation 2 finished")
+}
+let blockOperation3 = BlockOperation {
+    print("Operation 3 started")
+    sleep(2)
+    print("Operation 3 finished")
+}
+blockOperation1.addDependency(blockOperation2)
+blockOperation2.addDependency(blockOperation3)
+operationQueue.addOperations([blockOperation1, blockOperation2,blockOperation3], waitUntilFinished: false)
+print(operationQueue.progress.isFinished)
+print(operationQueue.progress.isPaused)
+ //
+
+//GCD============
+/*
+DispatchQueue.global(qos: .background).async {
+    // Background task
+    print("background---")
+    DispatchQueue.main.async {
+        // UI update on main thread
+        print("main---")
+    }
+}
+*/
+//==============
+let concurrentQueue = DispatchQueue(label: "com.example.concurrentQueue")
+concurrentQueue.async {
+    print("Task 1 started")
+    sleep(2)
+    print("Task 1 finished")
+}
+
+concurrentQueue.async {
+    print("Task 2 started")
+    sleep(2)
+    print("Task 2 finished")
+}

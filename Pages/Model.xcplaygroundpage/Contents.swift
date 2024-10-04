@@ -2,10 +2,14 @@
 
 import Foundation
 import Network
-var greeting = "Hello, playground"
-
+var postUrl = "https://jsonplaceholder.typicode.com/posts"
 //: [Next](@next)
-
+enum NetworkError: Error {
+    case badURL
+    case requestFailed
+    case invalidResponse
+    case decodingError
+}
 public struct PostModel: Codable{
     var body,title: String?
     var id,userId: Int
@@ -42,6 +46,22 @@ func fetchData<T:Codable>(url: String,completion: @escaping (Result<T,Error>) ->
     }
 }
 
+//async await..
+func getDataFromServer<T: Codable>(urlStr: String) async throws -> T{
+    guard let url = URL(string: urlStr) else { throw NetworkError.badURL }
+    let urlRequest = URLRequest(url: url)
+    let (data,response) = try await URLSession.shared.data(for: urlRequest)
+    guard let response = response as? HTTPURLResponse,response.statusCode == 200 else {
+        throw NetworkError.invalidResponse
+    }
+    do{
+        let result = try JSONDecoder().decode(T.self, from: data)
+        return result
+    }catch let err{
+        throw err
+    }
+}
+
 /*
 fetchData(url: postUrl) { (result: Result<[PostModel],Error>) in
 //  Result<Decodable & Encodable, Error> in
@@ -53,3 +73,141 @@ fetchData(url: postUrl) { (result: Result<[PostModel],Error>) in
     }
 }
 */
+
+Task{
+    do{
+        let result:[PostModel] = try await getDataFromServer(urlStr: postUrl)
+        print(result)
+    }catch let err{
+        print(err)
+    }
+   
+}
+
+// different data type
+struct FlexibleValue: Codable {
+    let intValue: Int?
+    let stringValue: String?
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        // Try to decode an integer first
+        if let intValue = try? container.decode(Int.self) {
+            self.intValue = intValue
+            self.stringValue = nil
+        }
+        // If that fails, try to decode a string
+        else if let stringValue = try? container.decode(String.self) {
+            self.intValue = nil
+            self.stringValue = stringValue
+        } else {
+            throw DecodingError.typeMismatch(
+                FlexibleValue.self,
+                DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Expected Int or String")
+            )
+        }
+    }
+    
+    // You can add methods to return a consistent type if needed
+    var value: String {
+        if let intValue = intValue {
+            return String(intValue)
+        } else if let stringValue = stringValue {
+            return stringValue
+        } else {
+            return ""
+        }
+    }
+}
+
+// lazy var..
+class DataLoader {
+    lazy var data: String = {
+        // Expensive data-loading logic
+        return "Loaded Data"
+    }()
+}
+
+//Init
+class Rectangle {
+    var width: Double
+    var height: Double
+    // Designated Initializer
+    init(width: Double, height: Double) {
+        self.width = width
+        self.height = height
+    }
+    // Convenience Initializer
+    convenience init(side: Double) {
+        self.init(width: side, height: side)
+    }
+}
+
+let square = Rectangle(side: 5.0)
+
+//Optionals
+enum Optional<T> {
+    case none  // Represents nil
+    case some(T)  // Represents a value of the wrapped type
+}
+
+//delegate
+protocol SendDataDelegate: NSObject{
+    func sendData()
+}
+class A:NSObject,SendDataDelegate{
+    var b: B?
+    init(_ objB: B){
+        super.init()
+        self.b = objB
+        b?.delegate = self
+    }
+    func sendData() {
+        print("received Data")
+    }
+}
+class B{
+    weak var delegate: SendDataDelegate?
+    func sendDataToB(){
+        self.delegate?.sendData()
+    }
+}
+
+var objB = B()
+var objA = A(objB)
+objB.sendDataToB()
+
+//closure;- A closure is a self-contained block of code that can be passed around and used in your code.
+func performOperation(with value: Int, operation: (Int) -> Int) -> Int {
+    return operation(value)
+}
+
+let result = performOperation(with: 5) { $0 * 2 }
+print(result)  // Outputs: 10
+
+// private or fileprivate
+class MyClass {
+    private var secret = 42
+    fileprivate var secretSize = 42
+    func revealSecret() -> Int {
+        return secret
+    }
+}
+
+extension MyClass{
+    func printSecret(){
+        print(secret)
+        print(secretSize)
+    }
+}
+
+class yourClass{
+    let obj = MyClass()
+    func printSecret(){
+        print(obj.secretSize)
+    }
+}
+//let obj = MyClass()
+//let objY = yourClass()
+//objY.obj.secretSize
+//obj.secretSize

@@ -51,33 +51,18 @@ func isFibNumber(a: Int = 0,b : Int = 1,count: Int = 1,number : Int = 34){
     }
 }
 
-func segregateZeroAnotherMethod(){
-    var i = 0 // 0
-    var j = numbers.count - 1 // 6
-    while (i < j){
-        if numbers[i] < numbers[j]{
-            swap(arr: &numbers, i: i,j: j)
-            i += 1
-            j -= 1
-        }else if numbers[i] == numbers[j] {
-            if numbers[i] == 0{
-                j -= 1
-            } else{
-                i += 1
-            }
-        } else{
-            i += 1
-            j -= 1
-        }
-    }
-//    print(numbers)
+
+//func swap(arr: inout [Int], i: Int, j: Int){
+//    let temp = arr[i]
+//    arr[i] = arr[j]
+//    arr[j] = temp
+//}
+func swap<T>(arr: inout [T], i: Int, j: Int) {
+    let temp = arr[i]
+    arr[i] = arr[j]
+    arr[j] = temp
 }
 
-func swap(arr: inout [Int], i: Int, j: Int){
-    var temp = numbers[i]
-    numbers[i] = numbers[j]
-    numbers[j] = temp
-}
 
 func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
     var map = [Int: Int]()
@@ -92,27 +77,7 @@ func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
     return []
 }
 print("two sum:-\(twoSum([4,6,7,8,1], 5))")
-//func twoSumGood(_ nums: [Int], _ target: Int) -> [Int] {
-//    var map = [Int: Int]()
-//    for (i, n) in nums.enumerated() {
-//        let diff = target - n
-//        if let j = map[diff] {
-//        return [i, j]
-//    }
-//    map[n] = i
-//    }
-//    return []
-//}
-
 /*
- diff = target - arr[i]
- contains in map {
- return true
- }
- append in map arr[i]
- 
- */
-
 extension Collection {
     func myMap<Transform>(transform:(Element) -> Transform)-> [Transform]{
         var result = [Transform]()
@@ -132,7 +97,7 @@ extension Collection {
         return result
     }
 }
-
+*/
 
 func longestPalindrome(_ s: String) -> String {
     
@@ -176,19 +141,15 @@ func longestPalindrome(_ s: String) -> String {
 }
 
 func segregate0_1_2_inArray(){
-    var number = [2,1,2,2,1,2,1,2,0,0,2,1]
-    //[2,0,2,2,1]
-    //[1,0,2,2,2]
-    //[0,1,2,2,2]
+    //    var number = [2,0,1,2,2,1,2,1,0,0,2,2,1,0]
+    var number = [0,1,1,1,0,0,1,0]
     var start = 0
     var last = number.count-1
     var mid = start
     while (mid<=last){
         switch number[mid]{
         case 0:
-            var temp = number[start]
-            number[start] = number[mid]
-            number[mid] = temp
+            swap(arr: &number, i: start, j: mid)
             start += 1
             mid += 1
             break
@@ -196,9 +157,7 @@ func segregate0_1_2_inArray(){
             mid += 1
             break
         case 2:
-            var temp = number[mid]
-            number[mid] = number[last]
-            number[last] = temp
+            swap(arr: &number, i: mid, j: last)
             last -= 1
             break
         default:
@@ -207,11 +166,12 @@ func segregate0_1_2_inArray(){
     }
     print(number)
 }
-//segregate0_1_2_inArray()
+print("segregate")
+segregate0_1_2_inArray()
 
 
 func repeatingCharInString(){
-    var input: String = "geeksforgeeks"
+    let input: String = "geeksforgeeks"
     var dict: [Character:Int] = [:]
     for char in input{
         dict[char] = (dict[char] ?? 0) + 1
@@ -219,14 +179,14 @@ func repeatingCharInString(){
     print("-----")
     print(dict)
     print("-----")
-    var result = dict.sorted(by: {$0.value > $1.value})
+    let result = dict.sorted(by: {$0.value > $1.value})
     print(result)
     print("-----")
     print(result.first?.key ?? "")
     //
-    var arr = Dictionary(grouping: input, by: {$0})
+    let arr = Dictionary(grouping: input, by: {$0})
     let resultt = arr.filter({$1.count > 1})
-    var output = resultt.sorted(by: {$0.value.count > $1.value.count}).first
+    let output = resultt.sorted(by: {$0.value.count > $1.value.count}).first
     print(output?.key ?? "")
     print("-----")
 }
@@ -238,105 +198,45 @@ repeatingCharInString()
 
 protocol AddNumber{
     associatedtype T
-    func addTwoNumber(_ num1: T,_ num2: T) -> T
+    func add(_ num1: T,_ num2: T) -> T
     var sum : T { get set}
 }
 
 class AddDouble : AddNumber{
     var sum: Double = 0
     typealias T = Double
-    func addTwoNumber(_ num1: Double, _ num2: Double) -> Double {
+    func add(_ num1: Double, _ num2: Double) -> Double {
         return num2 + num1
     }
 }
 
 class AddString : AddNumber{
-    var sum: String = ""
     typealias T = String
-    func addTwoNumber(_ num1: String, _ num2: String) -> String {
+    var sum: String = ""
+    func add(_ num1: String, _ num2: String) -> String {
+        return num2 + num1
+    }
+}
+
+class AddInt : AddNumber{
+    typealias T = Int
+    var sum: Int = 0
+    func add(_ num1: Int, _ num2: Int) -> Int {
         return num2 + num1
     }
 }
 
 //MARK:- Opaque type + associatedType
 class Output {
-    func getResultType() -> some AddNumber{
+    func getResultType() -> some AddNumber {
 //        return AddDouble()
         return  AddString()
     }
 }
 
-//MARK:- Node
-class Node<T: Equatable> {
-    var value:T
-    var previous : Node?
-    var next  : Node?
-    init(value: T){
-        self.value = value
-    }
-}
-
-extension Node: Equatable{
-    public static func == (lhs: Node<T>, rhs: Node<T>) -> Bool {
-        return lhs.value == rhs.value
-    }
-}
-
-public class LinkedList<T: Equatable>{
-     var head: Node<T>?
-    
-    var isEmpty: Bool{
-        return head == nil
-    }
-    
-    var first: Node<T>?{
-        return head
-    }
-    
-    var last: Node<T>?{
-        guard var node = head else { return nil}
-        while let next = node.next{
-            node = next
-        }
-        return node
-    }
-    
-    public func append(value: T){
-        let newNode = Node(value: value)
-        if let lastNode = last{
-            newNode.previous = lastNode
-            lastNode.next = newNode
-        }else{
-            head = newNode
-        }
-    }
-    
-    public func count() -> Int{
-        guard var node = head else { return 0}
-        var count = 1
-        while let next = node.next {
-            node = next
-            count += 1
-        }
-        return count
-    }
-    
-    func reverseLinkedListSimple() -> Node<T>?{
-        var current = head
-        var prev: Node<T>? = nil
-        var next: Node<T>? = nil
-        while (current != nil){
-            next = current?.next
-            current?.next = prev
-            prev = current
-            current = next
-        }
-        return prev
-    }
-}
 
 // Add two number..
-protocol Addable{
+protocol Addable: Equatable{
     static func +(lhs:Self,rhs:Self)-> Self
 }
 extension String: Addable{
@@ -361,7 +261,7 @@ func peakOfMountainIndex(_ arr: [Int]){
     var left = 0
     var right = arr.count-1
     while (left < right){
-        var mid = (left+right)/2
+        let mid = (left+right)/2
         if arr[mid] < arr[mid+1]{
             left = mid + 1
         } else{
@@ -388,6 +288,29 @@ func buyAndSellStock(){
 
 buyAndSellStock()
 
+func maxWaterProblem(heights: [Int])-> Int{
+    var leftIndex: Int  = 0
+    var rightIndex = heights.count - 1
+    var maxArea = 0
+    while (leftIndex < rightIndex){
+        let width = rightIndex - leftIndex
+        let leftHeight = heights[leftIndex]
+        let rightHeight = heights[rightIndex]
+        let minHeight = min(leftHeight, rightHeight)
+        let area = width * minHeight
+        maxArea = max(area, maxArea)
+        if (leftHeight <= rightHeight) {
+            leftIndex += 1
+        } else {
+            rightIndex -= 1
+        }
+    }
+    return maxArea
+}
+let maxwater = maxWaterProblem(heights: [2,1,5,7,0,9,3])
+print("max water area:\(maxwater)")
+
+
 struct Stack<T> : CustomStringConvertible{
     var description: String{
         return  (items.map({_ in "$0"}).joined(separator: ","))
@@ -411,7 +334,7 @@ struct Stack<T> : CustomStringConvertible{
 }
 
 func validExpression() -> Bool{
-    var s = "{{{({[]})}}}]"
+    let s = "{{{({[]})}}}]"
     var stack = Stack<Character>(items: [])
     for char in s{
         if char == "{" || char == "("  || char == "[" {
@@ -530,7 +453,6 @@ address = nil
 
 //MARK:- Comparable
 struct Student: Comparable {
-//2
   static func < (lhs: Student, rhs: Student) -> Bool {
       return lhs.secondName < rhs.secondName
   }
@@ -574,6 +496,7 @@ class Animal{
 //animal.breed = "American"
 //animal.name = "Cate"
 
+//buy and sell stocks..
 func maxProfit(_ prices: [Int]) -> Int {
     guard prices.count > 1 else { return 0 }
 //    var cnt = prices.count
@@ -628,3 +551,210 @@ func kadane(_ arr: [Int]) -> Int {
 let arr = [-2, 1, -3, 4, -2, 2, 1, -5, 4]
 let result = kadane(arr)
 print("Maximum subarray sum: \(result)")
+
+//String related questions
+func reverseString(str: inout String)-> String{
+    if str.isEmpty{ return ""}
+    var start:Int = 0
+    var last = str.count - 1
+    var strArr = Array(str)
+    while start < last{
+        let startStr = strArr[start]
+        let lastStr = strArr[last]
+        strArr[last] = startStr
+        strArr[start] = lastStr
+        start += 1
+        last -= 1
+    }
+    return String(strArr)
+}
+var inputStr = "abcef"
+let reverseOutput = reverseString(str: &inputStr)
+print("reverseOutput \(reverseOutput)")
+
+//Sorting..
+func sortArr(arr: inout [Int])-> [Int]{
+    for i in 0..<arr.count{
+        for j in i..<arr.count{
+            if arr[i] > arr[j]{
+                swap(arr: &arr, i: i, j: j)
+            }
+        }
+    }
+    return arr
+}
+
+
+//var inputArr = [-2, 1, -3, 4, -2, 2, 1, -5, 4]
+//let output = sortArr(arr: &inputArr)
+//print("sortOutput \(output)")
+
+func mergeSort(_ array: inout [Int]) {
+    if array.count <= 1 {
+        return
+    }
+
+    let middleIndex = array.count / 2
+    var leftArray = Array(array[0..<middleIndex])
+    var rightArray = Array(array[middleIndex..<array.count])
+
+    mergeSort(&leftArray)   // Recursively sort left half
+    mergeSort(&rightArray)  // Recursively sort right half
+    array = merge(leftArray, rightArray)
+    print("mergedArray\(array)")
+}
+
+func merge(_ left: [Int], _ right: [Int]) -> [Int] {
+    var mergedArray: [Int] = []
+    var leftIndex = 0
+    var rightIndex = 0
+
+    // Merge the two arrays by comparing elements
+    while leftIndex < left.count && rightIndex < right.count {
+        if left[leftIndex] < right[rightIndex] {
+            mergedArray.append(left[leftIndex])
+            leftIndex += 1
+        } else {
+            mergedArray.append(right[rightIndex])
+            rightIndex += 1
+        }
+    }
+
+    // Append any remaining elements from the left array
+    while leftIndex < left.count {
+        mergedArray.append(left[leftIndex])
+        leftIndex += 1
+    }
+
+    // Append any remaining elements from the right array
+    while rightIndex < right.count {
+        mergedArray.append(right[rightIndex])
+        rightIndex += 1
+    }
+    return mergedArray
+}
+
+//var input1Arr = [-2, 1, -3, 4, -2, 2, 1, -5, 4]
+//mergeSort(&input1Arr)
+
+//sliding window..Done
+func maxSumOfSubarrayOfSize(arr: [Int], k: Int) -> Int {
+    var windowSum = 0
+    var maxSum = 0
+    // Calculate the sum of the first window
+    for i in 0..<k {
+        windowSum += arr[i]
+    }
+    maxSum = windowSum
+    // Slide the window, subtract the element going out, and add the new element
+    for i in k..<arr.count {
+        windowSum += arr[i] - arr[i - k]
+        maxSum = max(maxSum, windowSum)
+        print(windowSum)
+    }
+    return maxSum
+}
+
+//let arrr = [2, 1, 5, 1, 3, 2]
+//[-2, 1, -3, 4, -2, 2, 1, -5, 4]
+//let k = 4
+//let ress = maxSumOfSubarrayOfSize(arr: arrr, k: k)
+//print("max Sum Of Subarray with K:- \(ress)")
+
+//without repeating characters as we move the window.
+func lengthOfLongestSubstring(_ s: String) -> Int {
+    var left = 0
+    var maxLength = 0
+    var charIndexMap = [Character: Int]()
+    let characters = Array(s)
+    for right in 0..<characters.count {
+        let currentChar = characters[right]
+        // If the current character is already in the map and is within the current window
+        if let lastSeenIndex = charIndexMap[currentChar], lastSeenIndex >= left {
+            // Move the left pointer to the right of the last seen position of the current character
+            left = lastSeenIndex + 1
+        }
+        // Update the map with the current character's index
+        charIndexMap[currentChar] = right
+        print(charIndexMap)
+        // Calculate the current window size and update maxLength
+        maxLength = max(maxLength, right - left + 1)
+    }
+    return maxLength
+}
+
+//let input = "abcabcbb"
+//print(lengthOfLongestSubstring(input))
+
+// Done
+func topKFrequent(_ nums: [Int], _ k: Int) -> [Int] {
+    var frequencyMap = [Int: Int]()
+    // Count the frequency of each element
+    for num in nums{
+        if let value = frequencyMap[num]{
+            frequencyMap[num] = value + 1
+        }else{
+            frequencyMap[num] = 1
+        }
+    }
+    print(frequencyMap)
+//    for num in nums {
+//        frequencyMap[num, default: 0] += 1
+//    }
+    // Convert the frequency map to an array of (element, frequency) tuples
+    let sortedByFrequency = frequencyMap.sorted { $0.value > $1.value }
+    // Extract the top K elements by their frequency
+    let result = sortedByFrequency.prefix(k).map { $0.key }
+    return result
+}
+
+//let numss = [1, 1, 1, 2, 2, 3]
+//let k = 2
+//print(topKFrequent(numss, k))
+
+
+func findAnagrams(_ s: String, _ p: String) -> [Int] {
+    var result = [Int]()
+    let sArray = Array(s)
+    let pArray = Array(p)
+    let sLength = sArray.count
+    let pLength = pArray.count
+    // If p is longer than s, there can't be any anagrams
+    if pLength > sLength {
+        return result
+    }
+    // Create frequency count for p
+    var pCount = [Int](repeating: 0, count: 26)
+    for char in pArray {
+        pCount[Int(char.asciiValue! - Character("a").asciiValue!)] += 1
+    }
+    print(pCount)
+    // Create frequency count for the first window in s
+    var sCount = [Int](repeating: 0, count: 26)
+    for i in 0..<pLength {
+        sCount[Int(sArray[i].asciiValue! - Character("a").asciiValue!)] += 1
+    }
+    print(sCount)
+    // Check if the first window matches
+    if sCount == pCount {
+        result.append(0)
+    }
+    // Slide the window across s
+    for i in pLength..<sLength {
+        // Add the next character to the window
+        sCount[Int(sArray[i].asciiValue! - Character("a").asciiValue!)] += 1
+        // Remove the first character of the previous window
+        sCount[Int(sArray[i - pLength].asciiValue! - Character("a").asciiValue!)] -= 1
+        // Check if current window matches the frequency count of p
+        if sCount == pCount {
+            result.append(i - pLength + 1)
+        }
+    }
+    return result
+}
+
+// Example usage
+let s = "abaebabadcd"
+let p = "aba"
+print(findAnagrams(s, p))  // Output: [0, 6]
+

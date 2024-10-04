@@ -103,3 +103,68 @@ print(user.name)  // Output: Ali
 //integrity
 //authentication
 //confidentiality
+
+// Open closed principle
+enum DeeplinkType {
+    case home
+    case profile
+    case setting // modifiction
+}
+
+protocol Deeplink {
+    var type: DeeplinkType { get }
+    func execute()
+}
+
+class HomeDeeplink: Deeplink {
+    let type: DeeplinkType = .home
+
+    func executeHome() {
+        // Presents the main screen
+    }
+    
+    func execute() {
+        print(type)
+    }
+}
+
+class SettingDeepLink: Deeplink{
+    var type: DeeplinkType = .setting
+    func executeSetting() {
+        // Presents the main screen
+    }
+    
+    func execute() {
+        print(type)
+    }
+}
+class ProfileDeeplink: Deeplink {
+    let type: DeeplinkType = .profile
+
+    func executeProfile() {
+        // Presents the profile screen
+    }
+    
+    func execute() {
+        print(type)
+    }
+}
+
+final class Router {
+    init(){}
+    static let shared = Router()
+    func execute(_ deeplink: Deeplink) {
+        deeplink.execute()
+        //        switch deeplink.type {
+        //        case .home:
+        //            (deeplink as? HomeDeeplink)?.executeHome()
+        //        case .profile:
+        //            (deeplink as? ProfileDeeplink)?.executeProfile()
+        //        case .setting:
+        //            (deeplink as? SettingDeepLink)?.executeSetting()
+        //        }
+    }
+}
+
+let setting = SettingDeepLink()
+Router.shared.execute(setting.self)
