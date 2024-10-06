@@ -2,6 +2,7 @@
 
 import Foundation
 import UIkit
+import Combine
 //: [Next](@next)
 
 func getId(_ completionHandler: @escaping (Result<Int,Error>)-> Void){
@@ -62,7 +63,7 @@ Task{
     }
 }
 
-
+var cancallable:Set(AnyCancellable) = []
 [1, 2, 3]
         .publisher
         .sink(receiveCompletion: { completion in
@@ -74,7 +75,7 @@ Task{
             }
         }, receiveValue: { value in
             print("Received value \(value)")
-        })
+        }).store(in: &cancallable)
 
 extension Notification.Name {
     static let newEvent = Notification.Name("new_event")

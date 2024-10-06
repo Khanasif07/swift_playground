@@ -9,5 +9,8 @@
         <page name='Networking'/>
         <page name='Combine'/>
         <page name='LinkedList'/>
+        <page name='BinaryTree'/>
+        <page name='Array'/>
+        <page name='Strings'/>
     </pages>
 </playground>
