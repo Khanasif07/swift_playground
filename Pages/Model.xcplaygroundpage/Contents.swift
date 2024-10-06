@@ -83,39 +83,30 @@ Task{
     }
    
 }
-
-// different data type
-struct FlexibleValue: Codable {
-    let intValue: Int?
-    let stringValue: String?
-    
+// different data type in json parsing...
+enum StringOrInt: Codable {
+    case string(String)
+    case int(Int)
+    // Custom decoding logic
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        // Try to decode an integer first
         if let intValue = try? container.decode(Int.self) {
-            self.intValue = intValue
-            self.stringValue = nil
-        }
-        // If that fails, try to decode a string
-        else if let stringValue = try? container.decode(String.self) {
-            self.intValue = nil
-            self.stringValue = stringValue
+            self = .int(intValue)
+        } else if let stringValue = try? container.decode(String.self) {
+            self = .string(stringValue)
         } else {
-            throw DecodingError.typeMismatch(
-                FlexibleValue.self,
-                DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Expected Int or String")
-            )
+            throw DecodingError.typeMismatch(StringOrInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Expected String or Int"))
         }
     }
     
-    // You can add methods to return a consistent type if needed
-    var value: String {
-        if let intValue = intValue {
-            return String(intValue)
-        } else if let stringValue = stringValue {
-            return stringValue
-        } else {
-            return ""
+    // Custom encoding logic
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .string(let stringValue):
+            try container.encode(stringValue)
+        case .int(let intValue):
+            try container.encode(intValue)
         }
     }
 }
@@ -182,7 +173,7 @@ func performOperation(with value: Int, operation: (Int) -> Int) -> Int {
     return operation(value)
 }
 
-let result = performOperation(with: 5) { $0 * 2 }
+let result = performOperation(with: 5, operation: {$0 * 2}
 print(result)  // Outputs: 10
 
 // private or fileprivate

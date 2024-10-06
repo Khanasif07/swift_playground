@@ -1,8 +1,7 @@
 //: [Previous](@previous)
 
 import Foundation
-
-var greeting = "Hello, playground"
+import UIKit
 
 //: [Next](@next)
 //The Singleton pattern ensures that only one instance of a class is created and provides a global point of access to that instance. This is useful when you need to share resources, like network managers or configuration files, across the app.
@@ -104,6 +103,48 @@ print(user.name)  // Output: Ali
 //authentication
 //confidentiality
 
+//The Decorator pattern allows behavior to be added to an individual object, dynamically, without affecting the behavior of other objects from the same class.
+
+
+// Basic UIView
+class SimpleView: UIView {
+    override func draw(_ rect: CGRect) {
+        print("Drawing simple view...")
+    }
+}
+
+// Decorator for adding a border
+class BorderedView: UIView {
+    private let decoratedView: UIView
+
+    init(view: UIView) {
+        self.decoratedView = view
+        super.init(frame: view.frame)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func draw(_ rect: CGRect) {
+        decoratedView.draw(rect)
+        addBorder()
+    }
+
+    private func addBorder() {
+        print("Adding border to the view...")
+    }
+}
+
+// Usage
+let simpleView = SimpleView()
+let borderedView = BorderedView(view: simpleView)
+borderedView.draw(CGRect(x: 0, y: 0, width: 100, height: 100))
+// Output:
+// Drawing simple view...
+// Adding border to the view...
+
+
 // Open closed principle
 enum DeeplinkType {
     case home
@@ -168,3 +209,75 @@ final class Router {
 
 let setting = SettingDeepLink()
 Router.shared.execute(setting.self)
+
+//vvimp
+//liskov substitution principle
+protocol Payment {
+    func process(amount: Double)
+}
+
+class CreditCardPayment: Payment {
+    func process(amount: Double) {
+        print("Processing credit card payment of $\(amount)")
+    }
+}
+
+class PayPalPayment: Payment {
+    func process(amount: Double) {
+        print("Processing PayPal payment of $\(amount)")
+    }
+}
+
+// Now, let's introduce a special class that requires additional setup:
+class CryptoPayment: Payment {
+    var isWalletSetUp: Bool = false
+    func setUpWallet() {
+        // Setup crypto wallet
+        isWalletSetUp = true
+        print("Crypto wallet setup complete.")
+    }
+    func process(amount: Double) {
+        if !isWalletSetUp {
+            print("Cannot process payment: Wallet is not set up.")
+            return
+        }
+        print("Processing crypto payment of $\(amount)")
+    }
+}
+
+
+//Dependency Inversion
+// Define the abstraction (protocol) High-level modules (business logic) should not depend on low-level modules (implementation details). Both should depend on abstractions (e.g., protocols).
+protocol DataFetching {
+    func fetchData()
+}
+
+// Create the concrete implementation of the protocol
+class APIService: DataFetching {
+    func fetchData() {
+        print("Fetching data from network...")
+    }
+}
+
+// Mock implementation for testing
+class MockAPIService: DataFetching {
+    func fetchData() {
+        print("Mock data for testing.")
+    }
+}
+
+// ViewController depends on abstraction (DataFetching) rather than concrete implementation
+class ViewController {
+    let dataFetcher: DataFetching
+
+    // Injecting the dependency via initializer
+    init(dataFetcher: DataFetching) {
+        self.dataFetcher = dataFetcher
+    }
+
+    func displayData() {
+        dataFetcher.fetchData()
+        // Display data in the UI
+    }
+}
+

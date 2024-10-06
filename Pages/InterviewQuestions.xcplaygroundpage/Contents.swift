@@ -3,19 +3,6 @@ import Foundation
 // Created repo on Github account
 var result = [1,2,3,4,5,6]
 var nums = [1,2,3,4,5,6]
-func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
-    if nums.isEmpty{
-        return []
-    }
-    for i in 0...nums.endIndex-1{
-        for j in (i+1)...nums.endIndex-1{
-            if nums[j] == target - nums[i]{
-                return [i,j]
-            }
-        }
-    }
-    return []
-}
 
 
 let sum = nums.reduce(0) { (result, next) in
@@ -52,9 +39,6 @@ extension Collection{
 
 
 func deferStatement(){
-    //    result.reduce(0) { x, y in
-    //        return x + y
-    //    }
     print("task1")
     defer {
         print("task2")
@@ -65,34 +49,7 @@ func deferStatement(){
     print("task4")
 }
 
-func mergeTwoSortedArray(arr1: [Int],arr2: [Int]) -> [Int]{
-    if arr1.isEmpty { return arr2}
-    if arr2.isEmpty { return arr1}
-    var i = 0
-    var j = 0
-    var finalArr = [Int]()
-    while(i<arr1.endIndex && j<arr2.endIndex){
-        if arr1[i] < arr2[j]{
-            finalArr.append(arr1[i])
-            i += 1
-        } else{
-            finalArr.append(arr2[j])
-            j += 1
-        }
-    }
-    
-    while (i<arr1.endIndex){
-        finalArr.append(arr1[i])
-        i += 1
-    }
-    
-    while (j<arr2.endIndex){
-        finalArr.append(arr2[j])
-        j += 1
-    }
-    return finalArr
-    
-}
+
 
 //func thirdLargestInArray(_ nums: [Int]) -> (Int,Int,Int){
 //    var first = 0

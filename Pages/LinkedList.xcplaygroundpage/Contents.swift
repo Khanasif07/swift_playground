@@ -54,6 +54,7 @@ public class LinkedList<T: Equatable>{
             head = newNode
         }
     }
+   
     
     public func count() -> Int{
         guard var node = head else { return 0}
@@ -113,8 +114,11 @@ public class LinkedList<T: Equatable>{
         }
     }
     
+    //1,2,3,4,newNodeToAppend,5
+    
+    //1,2,3,4,NodeToRemoved,5
     public func remove(node: Node<T>) -> T{
-        //1->2->3->4->nil
+        //1,2,3,4,NodeToRemoved,5
         let previousNode = node.previous
         let nextNode     = node.next
         
@@ -123,7 +127,6 @@ public class LinkedList<T: Equatable>{
         }else{
             head = nextNode
         }
-        
         nextNode?.previous = previousNode
         node.previous = nil
         node.next = node
@@ -153,11 +156,12 @@ public class LinkedList<T: Equatable>{
     }
     
     func reverseLinkedListSimple() -> Node<T>{
+        //1->2->3->nil
         var current = head
         var prev: Node<T>? = nil
         var next: Node<T>? = nil
         while (current != nil){
-            print(current?.value ?? T.self)
+            //print(current?.value ?? T.self)
             next = current?.next
             current?.next = prev
             prev = current
@@ -167,6 +171,8 @@ public class LinkedList<T: Equatable>{
         return head!
     }
     
+    
+    //VVIMP
     public func reverseListPair() -> Node<T>?{
         //1->2->3->4
         var current = head
@@ -182,8 +188,58 @@ public class LinkedList<T: Equatable>{
         return head
     }
 }
+
+//VVIMP
+func reverse(list: LinkedList<Int>){
+    //1->2->3->nil
+    var current = list.head
+    var prev: Node<Int>?
+    var next: Node<Int>?
+    while (current != nil) {
+        next = current?.next
+        current?.next = prev
+        prev = current
+        current = next
+    }
+    list.head = prev
+    print(list.printList)
+}
+
+func sortSingleList(list: LinkedList<Int>) -> LinkedList<Int>?{
+    if list.head == nil || list.head?.next == nil {
+        return list
+    }
+    //2->1->5->3->nil
+    var slowNode = list.head
+    var fastNode = list.head
+    var temp: Node<Int>?
+    while (fastNode != nil && fastNode?.next != nil){
+           temp =  slowNode
+           fastNode = fastNode?.next?.next
+           slowNode = slowNode?.next
+    }
+    temp?.next = nil
+    
+    let l1 = LinkedList<Int>()
+    l1.head = list.head
+    let sorted1 = sortSingleList(list: l1)
+    
+    let l2 = LinkedList<Int>()
+    l2.head = slowNode
+    let sorted2 = sortSingleList(list: l2)
+    
+    var sortedList = LinkedList<Int>()
+    sortedList.head = sortTwoSortedList(list1: sorted1!, list2: sorted2!)
+    print(sortedList.printList)
+    return sortedList
+}
+
+
+
 //VVIMP
 public func sortTwoSortedList(list1: LinkedList<Int>,list2:LinkedList<Int>) -> Node<Int>?{
+    //1->2>5->nil
+    //2->3->6->nil
     var head1 = list1.head
     var head2 = list2.head
     var newHead : Node<Int>? = nil
@@ -217,11 +273,13 @@ public func sortTwoSortedList(list1: LinkedList<Int>,list2:LinkedList<Int>) -> N
     return newHead
 }
 //VIMP
+//1->2->2->3->nil
 public func removeDuplicateFromSortedList(list: LinkedList<Int>) -> Node<Int>?{
     var p = list.head
     var q : Node<Int>? = nil
     while (p != nil && p?.next != nil){
         if (p?.value ?? 0 == p?.next?.value ?? 0){
+            //logic...
             q = p?.next?.next
             if q == nil {
                 p?.next = nil
@@ -269,20 +327,23 @@ list.insertNodeAt(value: 5, atIndex: 4)
 list.insertNodeAt(value: 6, atIndex: 5)
 
 var list1 = LinkedList<Int>()
+list1.append(value: 1)
 list1.append(value: 6)
-list1.append(value: 7)
+list1.append(value: 6)
 list1.append(value: 8)
-list1.insertNodeAt(value: 9, atIndex: 3)
-list1.insertNodeAt(value: 11, atIndex: 4)
 
-print(list.printList)
-print(list.reverseLinkedListSimple())
-print(list.printList)
-//
-//print(list.head?.value as Any)
-//
-//print(list.last?.value as Any)
-//
+var list2 = LinkedList<Int>()
+list2.append(value: 2)
+list2.append(value: 1)
+list2.append(value: 5)
+list2.append(value: 3)
+//list1.insertNodeAt(value: 9, atIndex: 3)
+//list1.insertNodeAt(value: 11, atIndex: 4)
+
+//print(list.printList)
+//print(list.reverseLinkedListSimple())
+//print(list.printList)
+
 //print(list.count())
 //
 //print(list.getNodeAt(atIndex: 2).value)
@@ -308,3 +369,4 @@ print(list.printList)
 //print(list.printList)
 
 //    print(detectLoopInLinkedList(list: list))
+sortSingleList(list: list2)
