@@ -10,7 +10,6 @@ var greeting = "Hello, playground"
 "".split(separator: " ")
 var numbers = [0,0,1,0,0,1,0,0]
 print(palindrome("abcdedcba"))
-//print(dictionaryGroupBy([1,2,5,6,3,2,1,3,2,6,7,4,8,9,5,7,9]))
 
 func palindrome(_ input: String)-> Bool{
     let char  = Array(input)
@@ -96,8 +95,8 @@ func maximumConsecutiveRepeatingCharacterInString(_ str: String){
         hashInt[char, default: 0] += 1
         hash[Int(char.asciiValue!-Character("a").asciiValue!)] += 1
     }
-//    print(hashInt)
-//    print(hash)
+    print(hashInt)
+    print(hash)
     print(maxCount)
 }
 let strs = "baaaaabbcccbbb"
@@ -378,3 +377,4 @@ func createSubSet(_ array: [Int], index: Int, cumulative: [Int]){
 }
     
 createSubSet([1,2,3,4], index: 0, cumulative: [])
+

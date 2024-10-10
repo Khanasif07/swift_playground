@@ -146,8 +146,6 @@ func peakOfMountainIndex(_ arr: [Int]){
 print("peakOfMountainIndex\(peakOfMountainIndex([1,2,3,4,5,2,1]))")
 //Trapping Rain Water Problem
 
-
-
 struct WillSetDidSet{
     var name: String = "khan"{
         didSet{
@@ -287,6 +285,7 @@ class Animal{
 //animal.name = "Dog"
 //animal.breed = "American"
 //animal.name = "Cate"
+
 
 //Sorting..
 func sortArr(arr: inout [Int])-> [Int]{

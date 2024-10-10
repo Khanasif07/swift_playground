@@ -70,6 +70,7 @@ func moveZerosToRight(_ nums: inout [Int]){
 //var nums3 = [0,0,0,1,0,0,3,0,3,4]
 //print(moveZerosToRight(&nums3))
 
+
 func findMaxConsecutiveOnes(_ nums: inout [Int]) -> Int{
     var currentMax = 1
     var maxValue = 0
@@ -158,7 +159,7 @@ func segregate0_1_2_inArray(_ arr: inout [Int]){
     while (mid<=last){
         switch arr[mid]{
         case 0:
-            //            swap(arr: &arr, i: start, j: mid)
+//            swap(arr: &arr, i: start, j: mid)
             arr.swapAt(start, mid)
             start += 1
             mid += 1
@@ -167,7 +168,7 @@ func segregate0_1_2_inArray(_ arr: inout [Int]){
             mid += 1
             break
         case 2:
-            //            swap(arr: &arr, i: mid, j: last)
+//            swap(arr: &arr, i: mid, j: last)
             arr.swapAt(mid, last)
             last -= 1
             break
@@ -368,7 +369,6 @@ func findMissingAndRepeating(_ arr: [Int]) -> (Int, Int) {
     // Calculate expected sum and sum of squares for numbers 1 to n
     let expectedSum = n * (n + 1) / 2
     let expectedSumOfSquares = n * (n + 1) * (2 * n + 1) / 6
-    
     // Calculate the actual sum and sum of squares from the given array
     var sumOfArray = 0
     var sumOfSquaresOfArray = 0
@@ -452,12 +452,10 @@ print(firstMissingPositive(&numss1))  // Output: 2
 //form largest number from array of int
 func formLargestNumberFromArrray(_ nums: [Int]) -> String {
     let numStrings = nums.map { String($0) }
-    //    print(numStrings)
     // Sort the numbers based on custom comparator
     let sortedStrings = numStrings.sorted { (a, b) -> Bool in
         return a + b > b + a
     }
-    //    print(sortedStrings)
     let result = sortedStrings.joined(separator: "")
     // Handle the case where the numbers are all zeros
     return result.first == "0" ? "0" : result
@@ -529,16 +527,15 @@ func subarraySumToTarget(_ nums: [Int], _ k: Int) -> Int {
         }
         // Update the frequency of the cumulative sum in the hashmap
         sumFrequency[cumulativeSum, default: 0] += 1
-        //        print(sumFrequency)
     }
     return count
 }
 
-// Example Usage:
 let nums23 = [1,2,2,3,4,5,2,3,4,1]
 let k = 5
 let resultt = subarraySumToTarget(nums23, k)
 print(resultt)
+
 
 
 func twoSumWithBinarySearchApproch(_ nums: [Int], _ target: Int) -> [Int] {
@@ -574,9 +571,9 @@ func topKFrequent(_ nums: [Int], _ k: Int) -> [Int] {
         }
     }
     print(frequencyMap)
-    //    for num in nums {
-    //        frequencyMap[num, default: 0] += 1
-    //    }
+//    for num in nums {
+//        frequencyMap[num, default: 0] += 1
+//    }
     // Convert the frequency map to an array of (element, frequency) tuples
     let sortedByFrequency = frequencyMap.sorted { $0.value > $1.value }
     // Extract the top K elements by their frequency
