@@ -12,6 +12,13 @@ func getId(_ completionHandler: @escaping (Result<Int,Error>)-> Void){
     })
 }
 
+func getName(id: Int,_ completionHandler: @escaping  (Result<String,Error>)-> Void){
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+        let name = "Hidubai"
+        completionHandler(.success(name))
+    })
+}
+
 
 func getIdWithAsync() async  -> Int {
     await Task.sleep( 2 * 1_000_000_000)  // 2 seconds delay (in nanoseconds)
@@ -20,18 +27,21 @@ func getIdWithAsync() async  -> Int {
     return userId
 }
 
-func getName(id: Int,_ completionHandler: @escaping  (Result<String,Error>)-> Void){
-    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-        let name = "Hidubai"
-        completionHandler(.success(name))
-    })
-}
-
 func getNameWithAsync(id: Int) async  -> String {
     await Task.sleep( 2 * 1_000_000_000)   // 2 seconds delay (in nanoseconds)
     let name = "Hidubai"
     print(Thread.current.isMainThread)
     return name
+}
+
+Task{
+    do {
+        let userId = await getIdWithAsync()
+        let userName = await getNameWithAsync(id: userId)
+        print(userName)
+    }catch {
+        print("Failed with error: \(error)")
+    }
 }
 
 //getId { userIdResponse in

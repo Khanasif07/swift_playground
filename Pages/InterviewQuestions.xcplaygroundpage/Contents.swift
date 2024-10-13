@@ -37,6 +37,54 @@ extension Collection{
     }
 }
 
+//Property wrapper...
+@propertyWrapper
+struct CapsLock {
+    private var value: String
+    var wrappedValue: String {
+        get { value }
+        set { value = newValue.uppercased() }
+    }
+    
+    init(wrappedValue: String) {
+        self.value = wrappedValue.uppercased()
+    }
+}
+
+struct UserName{
+    @CapsLock var name: String
+    var fullName: String = ""{
+        return name + "khan"
+    }
+    //Observe changes in order to uodate UI..
+    var temperature: Int = 0 {
+        willSet(newTemperature) {
+            print("Temperature is about to change to \(newTemperature)")
+        }
+        didSet {
+            print("Temperature has changed from \(oldValue) to \(temperature)")
+        }
+    }
+    var celsius: Double = 0.0
+    //Computed property(Only one computed property)
+    var fahrenheit: Double {
+        get {
+            return (celsius * 9/5) + 32
+        }
+        set {
+            celsius = (newValue - 32) * 5/9
+        }
+    }
+    var fahrenheits: Double{
+        return (celsius * 9/5) + 32
+    }
+    lazy var data: String = {
+        // Expensive data-loading logic
+        return "Loaded Data"
+    }()
+}
+var user = User(username: "johnDoe")
+print(user.username)  // Output: "JOHNDOE"
 
 func deferStatement(){
     print("task1")
@@ -48,8 +96,6 @@ func deferStatement(){
     }
     print("task4")
 }
-
-
 
 //func thirdLargestInArray(_ nums: [Int]) -> (Int,Int,Int){
 //    var first = 0

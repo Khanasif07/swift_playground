@@ -55,20 +55,31 @@ func removeDuplicatesfromSortedArray(_ nums: inout [Int]){
 //var nums2 = [1,1,2,2,3,3,3,4]
 //print(removeDuplicatesfromSortedArray(&nums2))
 
-func moveZerosToRight(_ nums: inout [Int]){
-    var j = 0
-    for i in 0..<nums.count{
-        if nums[i] == 0{
-            //do nothing...
-        }else{
-            nums.swapAt(i, j)
-            j += 1
-        }
+// reverseArray
+func reverseArray(_ arr: inout [Int],i: Int, j: Int){
+    if i>=j{
+        print(arr)
+        return
     }
-    print(nums)
+    arr.swapAt(i, j)
+    reverseArray(&arr, i: i+1, j: j-1)
 }
-//var nums3 = [0,0,0,1,0,0,3,0,3,4]
-//print(moveZerosToRight(&nums3))
+//var nums234 = [1,4,2,5,9,6]
+//print("reverse array:-\(reverseArray(&nums234, i: 0, j: nums234.count-1))")
+
+//Rotate array by 1
+func rotateArrayBy1(_ arr: inout [Int]){
+    guard !arr.isEmpty else { return}
+    let last = arr[arr.count-1]
+    for i in stride(from: arr.count-1, through: 1, by: -1){
+        arr[i] = arr[i-1]
+    }
+    arr[0] = last
+    print(arr)
+}
+//[1,2,3,4,5] -> [5,1,2,3,4]
+//var arrrr = [1,2,3,4,5]
+//print("Rotate Array By 1:-\(rotateArrayBy1(&arrrr))")
 
 
 func findMaxConsecutiveOnes(_ nums: inout [Int]) -> Int{
@@ -88,7 +99,6 @@ func findMaxConsecutiveOnes(_ nums: inout [Int]) -> Int{
 //var nums4 = [0,0,1,1,1,0,1,3,1,1]
 //print(findMaxConsecutiveOnes(&nums4))
 
-//print("profit:-\(maxProfit([7,6,4,3,1,10]
 func rotate(_ nums: inout [Int], _ k: Int) {
     let n = nums.count
     let steps = k % n  // Handle cases where k is greater than the array size
@@ -151,6 +161,7 @@ print(resultData)  // Output: 12 (sum of [1, 4, 2, 1, 4])
 
 
 //Three way partitioning 🔥| Array | Dutch Algorithm
+//Move all negative numbers to beginning and positive to end with constant extra space
 //sort 0,1,2
 func segregate0_1_2_inArray(_ arr: inout [Int]){
     var start = 0
@@ -159,7 +170,6 @@ func segregate0_1_2_inArray(_ arr: inout [Int]){
     while (mid<=last){
         switch arr[mid]{
         case 0:
-//            swap(arr: &arr, i: start, j: mid)
             arr.swapAt(start, mid)
             start += 1
             mid += 1
@@ -168,7 +178,6 @@ func segregate0_1_2_inArray(_ arr: inout [Int]){
             mid += 1
             break
         case 2:
-//            swap(arr: &arr, i: mid, j: last)
             arr.swapAt(mid, last)
             last -= 1
             break
@@ -183,6 +192,20 @@ var nums8 = [2,0,1,2,2,1,2,1,0,0,2,2,1,0]
 // if 1 comes increament mid
 // if 2 comes swap mid and last and  decreament last
 //segregate0_1_2_inArray(&nums8)
+
+func moveZerosToRight(_ nums: inout [Int]){
+    var j = 0
+    for i in 0..<nums.count{
+        if nums[i] != 0{
+            nums.swapAt(i, j)
+            j += 1
+        }
+    }
+    print(nums)
+}
+//var nums3 = [0,0,0,1,0,0,3,0,3,4]
+//print(moveZerosToRight(&nums3))
+
 
 
 //minSofar and profit --
@@ -392,10 +415,9 @@ func findMissingAndRepeating(_ arr: [Int]) -> (Int, Int) {
     return (missing, repeating)
 }
 
-// Example Usage:
-let arr = [1, 3, 3, 4, 5]
-let res = findMissingAndRepeating(arr)
-print("Missing number: \(res.0), Repeating number: \(res.1)")
+//let arr = [1, 3, 3, 4, 5]
+//let res = findMissingAndRepeating(arr)
+//print("Missing number: \(res.0), Repeating number: \(res.1)")
 // Output: Missing number: 2, Repeating number: 3
 
 //Maximum Product Subarray |
@@ -444,9 +466,8 @@ func firstMissingPositive(_ nums: inout [Int]) -> Int {
     return n + 1
 }
 
-// Example usage:
-var numss1 = [3, 4, -1, 1,0]
-print(firstMissingPositive(&numss1))  // Output: 2
+//var numss1 = [3, 4, -1, 1,0]
+//print(firstMissingPositive(&numss1))  // Output: 2
 
 
 //form largest number from array of int
@@ -461,9 +482,8 @@ func formLargestNumberFromArrray(_ nums: [Int]) -> String {
     return result.first == "0" ? "0" : result
 }
 
-// Example usage:
-let nums1 = [3, 30, 34, 5, 9]
-print(formLargestNumberFromArrray(nums1))
+//let nums1 = [3, 30, 34, 5, 9]
+//print(formLargestNumberFromArrray(nums1))
 
 //sliding window..Done
 func maxSumOfSubarrayOfSize(arr: [Int], k: Int) -> Int {
@@ -527,6 +547,7 @@ func subarraySumToTarget(_ nums: [Int], _ k: Int) -> Int {
         }
         // Update the frequency of the cumulative sum in the hashmap
         sumFrequency[cumulativeSum, default: 0] += 1
+//        print(sumFrequency)
     }
     return count
 }
@@ -535,8 +556,6 @@ let nums23 = [1,2,2,3,4,5,2,3,4,1]
 let k = 5
 let resultt = subarraySumToTarget(nums23, k)
 print(resultt)
-
-
 
 func twoSumWithBinarySearchApproch(_ nums: [Int], _ target: Int) -> [Int] {
     nums.sorted()
@@ -555,25 +574,16 @@ func twoSumWithBinarySearchApproch(_ nums: [Int], _ target: Int) -> [Int] {
     }
     return []
 }
-
-print("two sum binary search approch:-\(twoSumWithBinarySearchApproch([4,6,7,8,1], 5))")
-
+//print("two sum binary search approch:-\(twoSumWithBinarySearchApproch([4,6,7,8,1], 5))")
 
 // Done
 func topKFrequent(_ nums: [Int], _ k: Int) -> [Int] {
     var frequencyMap = [Int: Int]()
     // Count the frequency of each element
-    for num in nums{
-        if let value = frequencyMap[num]{
-            frequencyMap[num] = value + 1
-        }else{
-            frequencyMap[num] = 1
-        }
-    }
     print(frequencyMap)
-//    for num in nums {
-//        frequencyMap[num, default: 0] += 1
-//    }
+    for num in nums {
+        frequencyMap[num, default: 0] += 1
+    }
     // Convert the frequency map to an array of (element, frequency) tuples
     let sortedByFrequency = frequencyMap.sorted { $0.value > $1.value }
     // Extract the top K elements by their frequency
@@ -610,9 +620,8 @@ func longestConsecutivesequence(_ nums: [Int]) -> Int {
     return longestStreak
 }
 
-// Example Usage:
-let nums24 = [100, 4, 200, 1, 3, 2]
-print(longestConsecutivesequence(nums24))  // Output: 4
+//let nums24 = [100, 4, 200, 1, 3, 2]
+//print(longestConsecutivesequence(nums24))  // Output: 4
 
 
 func minOperationsToMakePalindrome(_ arr: [Int]) -> Int {
@@ -638,14 +647,13 @@ func minOperationsToMakePalindrome(_ arr: [Int]) -> Int {
             operations += 1
         }
     }
-    
     return operations
 }
 
-// Example usage:
-let arr21 = [1, 4, 5, 1]
-let result = minOperationsToMakePalindrome(arr21)
-print(result)  // Output: 1
+
+//let arr21 = [1, 4, 5, 1]
+//let result = minOperationsToMakePalindrome(arr21)
+//print(result)  // Output: 1
 
 //difference of pair is K.
 func findPairs(_ nums: [Int], _ k: Int) -> Int {
@@ -679,10 +687,9 @@ func findPairs(_ nums: [Int], _ k: Int) -> Int {
     return count
 }
 
-// Example Usage:
-let nums20 = [3, 1, 4, 1, 5]
-let kk = 2
-print(findPairs(nums20, kk))  // Output: 2
+//let nums20 = [3, 1, 4, 1, 5]
+//let kk = 2
+//print(findPairs(nums20, kk))  // Output: 2
 
 // sum of square of two number to K..a2 + b2 = k
 //a = 0 , b = k, if a2+b2 > k , b-- else a++
@@ -725,8 +732,8 @@ func findSubarrayToSortToSortArray(_ arr: [Int])-> Int{
     print(Array(arr[start..<last]))
     return 0
 }
-var nums19 = [2,6,4,8,10,9,15]
-print(findSubarrayToSortToSortArray(nums19))
+//var nums19 = [2,6,4,8,10,9,15]
+//print(findSubarrayToSortToSortArray(nums19))
 
 //Count frequencies of all elements in array in O(1) extra space and O(n) time
 // VVImp..
@@ -744,8 +751,8 @@ func findCounts(_ arr: [Int]){
     }
     print(hash)
 }
-print("findCounts")
-findCounts([2, 3, 3, 2, 5])
+//print("findCounts")
+//findCounts([2, 3, 3, 2, 5])
 
 // vvimp
 func factorial(of n: Int) -> [Int] {
@@ -776,9 +783,9 @@ private func multiply(_ result: inout [Int], by multiplier: Int) {
     }
 }
 
-let largeFactorial = factorial(of: 10)  // Computing 100!
-print("largeFactorial:-:")
-print(largeFactorial)
+//let largeFactorial = factorial(of: 10)  // Computing 100!
+//print("largeFactorial:-:")
+//print(largeFactorial)
 
 //Find a peak element which is not smaller than its neighbours
 func findPeakElementInArray(_ arr: [Int])-> Int{
@@ -838,9 +845,9 @@ func search(_ nums: [Int], _ target: Int) -> Int {
     return -1
 }
 
-let numsss = [4,5,6,7,0,1,2]
-let targett = 5
-print("search in sorted rotated array:- \(search(numsss, targett))")
+//let numsss = [4,5,6,7,0,1,2]
+//let targett = 5
+//print("search in sorted rotated array:- \(search(numsss, targett))")
 
 //merge two sorted arr
 func mergeTwoSortedArray(arr1: [Int],arr2: [Int]) -> [Int]{
@@ -886,5 +893,52 @@ func removeDuplicates(_ nums: inout  [Int]) -> Int {
     print(nums.prefix(slow + 1))
     return slow + 1
 }
-var nums122 = [2,5,5,6,7,7,8,9]
-print(removeDuplicates(&nums122))
+//var nums122 = [2,5,5,6,7,7,8,9]
+//print(removeDuplicates(&nums122))
+
+//Sort an array in wave form-first sort arr then swap i and i+1 with 2 interval..
+//[1,2,3,4,5] -> [2,1,4,3,5]
+
+
+//Trapping Rain Water Problem
+func trappingRainWaterProblem(_ arr: inout [Int])->Int{
+    var currSum = 0
+    for i in 1..<arr.count-1{
+        if (findLeftMax(arr, currentIndex: i) > arr[i] && findRightMax(arr, currentIndex: i) > arr[i]){
+            let min = min(findLeftMax(arr, currentIndex: i),findRightMax(arr, currentIndex: i))
+            let diff = min - arr[i]
+            currSum += diff
+        }
+    }
+    print(currSum)
+    return currSum
+    func findLeftMax(_ arr: [Int],currentIndex:  Int)->Int{
+        var i = currentIndex
+        var currE = arr[i]
+        var max = -1
+        while (i>0) {
+            i -= 1
+            if currE < arr[i]{
+                currE = arr[i]
+                max = arr[i]
+            }
+        }
+        return max
+    }
+    
+    func findRightMax(_ arr: [Int],currentIndex: Int)->Int{
+        var i = currentIndex
+        var currE = arr[i]
+        var max = -1
+        while (i<arr.count-1) {
+            i += 1
+            if currE < arr[i]{
+                currE = arr[i]
+                max = arr[i]
+            }
+        }
+        return max
+    }
+}
+var inputA = [10, 9, 0, 5]
+print("trappingRainWaterProblem:-\(trappingRainWaterProblem(&inputA))")

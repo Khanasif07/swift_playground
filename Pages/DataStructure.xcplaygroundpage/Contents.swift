@@ -144,7 +144,6 @@ func peakOfMountainIndex(_ arr: [Int]){
   print(right)
 }
 print("peakOfMountainIndex\(peakOfMountainIndex([1,2,3,4,5,2,1]))")
-//Trapping Rain Water Problem
 
 struct WillSetDidSet{
     var name: String = "khan"{
@@ -394,3 +393,28 @@ func fibonacci(_ n: Int) -> Int {
     return fibonacci(n - 1) + fibonacci(n - 2)
 }
 
+func fibonaccii(_ n: Int) -> Int {
+    // Base cases
+    if n == 0 {
+        return 0
+    }
+    if n == 1 {
+        return 1
+    }
+    
+    // Create an array to store Fibonacci numbers
+    var fib = [Int](repeating: 0, count: n + 1)
+    // Initial values for base cases
+    fib[0] = 0
+    fib[1] = 1
+    // Fill the array with Fibonacci values from 2 to n
+    for i in 2...n {
+        fib[i] = fib[i - 1] + fib[i - 2]
+    }
+    // Return the nth Fibonacci number
+    return fib[n]
+}
+
+// Example usage:
+let n = 10
+print("Fibonacci number at position \(n) is \(fibonaccii(n))")
